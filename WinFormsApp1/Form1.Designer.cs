@@ -1,6 +1,6 @@
 ﻿namespace WinFormsApp1
 {
-    partial class Form1
+    partial class mainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,19 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            APISettings = new Button();
             SuspendLayout();
             // 
-            // Form1
+            // APISettings
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            APISettings.Font = new Font("Segoe UI", 10F);
+            APISettings.Location = new Point(613, 14);
+            APISettings.Name = "APISettings";
+            APISettings.Size = new Size(175, 36);
+            APISettings.TabIndex = 0;
+            APISettings.Text = "Настройки API";
+            APISettings.UseVisualStyleBackColor = true;
+            // 
+            // mainForm
+            // 
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Name = "Form1";
-            Text = "Form1";
+            ClientSize = new Size(800, 510);
+            Controls.Add(APISettings);
+            Font = new Font("Segoe UI", 10F);
+            Name = "mainForm";
             Load += Form1_Load;
             ResumeLayout(false);
         }
 
         #endregion
+
+        private Button APISettings;
     }
 }
