@@ -1,6 +1,6 @@
 ﻿namespace WinFormsApp1
 {
-    partial class mainForm
+    partial class Form1
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,21 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            APISettings = new Button();
+            APISettingsBtn = new Button();
             AddBtn = new Button();
             EditBtn = new Button();
             DeleteBtn = new Button();
             SuspendLayout();
             // 
-            // APISettings
+            // APISettingsBtn
             // 
-            APISettings.Font = new Font("Segoe UI", 10F);
-            APISettings.Location = new Point(613, 14);
-            APISettings.Name = "APISettings";
-            APISettings.Size = new Size(175, 35);
-            APISettings.TabIndex = 0;
-            APISettings.Text = "Настройки API";
-            APISettings.UseVisualStyleBackColor = true;
+            APISettingsBtn.Font = new Font("Segoe UI", 10F);
+            APISettingsBtn.Location = new Point(613, 14);
+            APISettingsBtn.Name = "APISettingsBtn";
+            APISettingsBtn.Size = new Size(175, 35);
+            APISettingsBtn.TabIndex = 0;
+            APISettingsBtn.Text = "Настройки API";
+            APISettingsBtn.UseVisualStyleBackColor = true;
             // 
             // AddBtn
             // 
@@ -61,7 +61,6 @@
             EditBtn.TabIndex = 2;
             EditBtn.Text = "Редактировать";
             EditBtn.UseVisualStyleBackColor = true;
-            EditBtn.Click += EditBtn_Click;
             // 
             // DeleteBtn
             // 
@@ -72,7 +71,7 @@
             DeleteBtn.Text = "Удалить";
             DeleteBtn.UseVisualStyleBackColor = true;
             // 
-            // mainForm
+            // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -80,16 +79,16 @@
             Controls.Add(DeleteBtn);
             Controls.Add(EditBtn);
             Controls.Add(AddBtn);
-            Controls.Add(APISettings);
+            Controls.Add(APISettingsBtn);
             Font = new Font("Segoe UI", 10F);
-            Name = "mainForm";
+            Name = "Form1";
             Load += Form1_Load;
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Button APISettings;
+        private Button APISettingsBtn;
         private Button AddBtn;
         private Button EditBtn;
         private Button DeleteBtn;

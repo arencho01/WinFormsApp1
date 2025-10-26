@@ -1,12 +1,13 @@
 namespace WinFormsApp1
 {
-    public partial class mainForm : Form
+    public partial class Form1 : Form
     {
-        public mainForm()
+        public Form1()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
 
-            APISettings.Click += APISettings_Click;
+            APISettingsBtn.Click += APISettingsBtn_Click;
             EditBtn.Click += EditBtn_Click;
             AddBtn.Click += AddBtn_Click;
             DeleteBtn.Click += DeleteBtn_Click;
@@ -17,7 +18,7 @@ namespace WinFormsApp1
 
         }
 
-        private void APISettings_Click(Object? sender, EventArgs e)
+        private void APISettingsBtn_Click(Object? sender, EventArgs e)
         {
             MessageBox.Show("API Settings");
         }
