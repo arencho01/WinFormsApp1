@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
-    public partial class APISettingsFrom : Form
+    public partial class APISettingsForm : Form
     {
-        public APISettingsFrom()
+        public APISettingsForm()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;

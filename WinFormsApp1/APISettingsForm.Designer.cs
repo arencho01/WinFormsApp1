@@ -1,6 +1,6 @@
 ﻿namespace WinFormsApp1
 {
-    partial class APISettingsFrom
+    partial class APISettingsForm
     {
         /// <summary>
         /// Required designer variable.
