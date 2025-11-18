@@ -11,6 +11,7 @@ namespace WinFormsApp1
             EditBtn.Click += EditBtn_Click;
             AddBtn.Click += AddBtn_Click;
             DeleteBtn.Click += DeleteBtn_Click;
+            ClientComboBox.SelectedIndexChanged += Client—omboBox_SelectedIndexChanged;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -37,6 +38,11 @@ namespace WinFormsApp1
         private void DeleteBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Delete");
+        }
+
+        private void Client—omboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+
         }
     }
 }

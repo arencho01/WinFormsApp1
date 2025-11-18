@@ -32,6 +32,9 @@
             AddBtn = new Button();
             EditBtn = new Button();
             DeleteBtn = new Button();
+            label1 = new Label();
+            ClientComboBox = new ComboBox();
+            label2 = new Label();
             SuspendLayout();
             // 
             // APISettingsBtn
@@ -71,11 +74,41 @@
             DeleteBtn.Text = "Удалить";
             DeleteBtn.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(12, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(56, 19);
+            label1.TabIndex = 4;
+            label1.Text = "Клиент:";
+            // 
+            // comboBox1
+            // 
+            ClientComboBox.FormattingEnabled = true;
+            ClientComboBox.Location = new Point(74, 9);
+            ClientComboBox.Name = "ClientComboBox";
+            ClientComboBox.Size = new Size(121, 25);
+            ClientComboBox.TabIndex = 5;
+            ClientComboBox.SelectedIndexChanged += ClientСomboBox_SelectedIndexChanged;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(12, 77);
+            label2.Name = "label2";
+            label2.Size = new Size(126, 19);
+            label2.TabIndex = 6;
+            label2.Text = "Питомцы клиента:";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 510);
+            Controls.Add(label2);
+            Controls.Add(ClientComboBox);
+            Controls.Add(label1);
             Controls.Add(DeleteBtn);
             Controls.Add(EditBtn);
             Controls.Add(AddBtn);
@@ -84,6 +117,7 @@
             Name = "Form1";
             Load += Form1_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -92,5 +126,8 @@
         private Button AddBtn;
         private Button EditBtn;
         private Button DeleteBtn;
+        private Label label1;
+        private ComboBox ClientComboBox;
+        private Label label2;
     }
 }
