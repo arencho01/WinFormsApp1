@@ -15,6 +15,7 @@ namespace WinFormsApp1
         public APISettingsFrom()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
     }
 }

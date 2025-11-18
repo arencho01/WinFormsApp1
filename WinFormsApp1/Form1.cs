@@ -20,7 +20,8 @@ namespace WinFormsApp1
 
         private void APISettingsBtn_Click(Object? sender, EventArgs e)
         {
-            MessageBox.Show("API Settings");
+            APISettingsFrom APISettingsFrom = new APISettingsFrom();
+            APISettingsFrom.Show();
         }
 
         private void EditBtn_Click(object? sender, EventArgs e)
