@@ -24,8 +24,8 @@ namespace WinFormsApp1
 
         private void APISettingsBtn_Click(Object? sender, EventArgs e)
         {
-            APISettingsForm APISettingsFrom = new APISettingsForm();
-            APISettingsFrom.Show();
+            APISettingsForm APISettingsForm = new APISettingsForm();
+            APISettingsForm.Show();
         }
 
         private void EditBtn_Click(object? sender, EventArgs e)
