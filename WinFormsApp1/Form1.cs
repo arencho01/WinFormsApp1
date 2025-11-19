@@ -14,6 +14,7 @@ namespace WinFormsApp1
             DeleteBtn.Click += DeleteBtn_Click;
             ClientComboBox.SelectedIndexChanged += Client—omboBox_SelectedIndexChanged;
 
+            UpdateButtonsState();
             LoadSettings();
         }
 
@@ -78,6 +79,13 @@ namespace WinFormsApp1
 
                 ClientComboBox.Enabled = false;
             }
+        }
+
+        private void UpdateButtonsState()
+        {
+            AddBtn.Enabled = false;
+            EditBtn.Enabled = false;
+            DeleteBtn.Enabled = false;
         }
     }
 }
