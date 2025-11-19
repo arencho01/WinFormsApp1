@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|c:\\users\\user\\source\\repos\\winformsapp1\\winformsapp1\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|solutionrelative:winformsapp1\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|c:\\users\\user\\source\\repos\\winformsapp1\\winformsapp1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|solutionrelative:winformsapp1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|c:\\users\\user\\source\\repos\\winformsapp1\\winformsapp1\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|solutionrelative:winformsapp1\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{08ACB23F-69AA-4885-B8E5-0943B809646D}|WinFormsApp1\\WinFormsApp1.csproj|c:\\users\\user\\source\\repos\\winformsapp1\\winformsapp1\\winformsapp1.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
@@ -42,17 +42,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Form1.Designer.cs",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "WinFormsApp1\\Form1.Designer.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.Designer.cs*",
-              "RelativeToolTip": "WinFormsApp1\\Form1.Designer.cs*",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAswF8AAAAPAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.Designer.cs",
+              "RelativeToolTip": "WinFormsApp1\\Form1.Designer.cs",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAswFwAAABXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-18T12:56:12.441Z",
               "EditorCaption": ""
@@ -98,13 +98,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.cs",
               "RelativeDocumentMoniker": "WinFormsApp1\\Form1.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.cs*",
-              "RelativeToolTip": "WinFormsApp1\\Form1.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAJAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.cs",
+              "RelativeToolTip": "WinFormsApp1\\Form1.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAowCwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-14T19:19:10.39Z",
               "EditorCaption": ""
@@ -115,8 +115,8 @@
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.cs",
               "RelativeDocumentMoniker": "WinFormsApp1\\Form1.cs",
-              "ToolTip": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.cs [Design]*",
-              "RelativeToolTip": "WinFormsApp1\\Form1.cs [Design]*",
+              "ToolTip": "C:\\Users\\user\\source\\repos\\WinFormsApp1\\WinFormsApp1\\Form1.cs [Design]",
+              "RelativeToolTip": "WinFormsApp1\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-14T19:18:51.082Z",
               "EditorCaption": " [Design]"
