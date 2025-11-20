@@ -30,7 +30,7 @@ namespace WinFormsApp1
             {
                 try
                 {
-                    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ApiSettings));
+                    XmlSerializer serializer = new XmlSerializer(typeof(ApiSettings));
 
                     using var reader = new StreamReader("settings.xml");
 
@@ -84,7 +84,7 @@ namespace WinFormsApp1
                     Token = "temp_token",
                 };
 
-                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ApiSettings));
+                XmlSerializer serializer = new XmlSerializer(typeof(ApiSettings));
                 using var writer = new StreamWriter("settings.xml");
                 serializer.Serialize(writer, settings);
 
