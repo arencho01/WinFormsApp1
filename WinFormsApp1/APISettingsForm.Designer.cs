@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            textBox1 = new TextBox();
+            domainTextBox = new TextBox();
             label2 = new Label();
-            textBox2 = new TextBox();
+            loginTextBox = new TextBox();
             label3 = new Label();
-            textBox3 = new TextBox();
-            button1 = new Button();
+            passwordTextBox = new TextBox();
+            ConnectBtn = new Button();
             SuspendLayout();
             // 
             // label1
@@ -47,13 +47,13 @@
             label1.TabIndex = 0;
             label1.Text = "Домен:";
             // 
-            // textBox1
+            // domainTextBox
             // 
-            textBox1.BorderStyle = BorderStyle.FixedSingle;
-            textBox1.Location = new Point(77, 32);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(328, 25);
-            textBox1.TabIndex = 1;
+            domainTextBox.BorderStyle = BorderStyle.FixedSingle;
+            domainTextBox.Location = new Point(77, 32);
+            domainTextBox.Name = "domainTextBox";
+            domainTextBox.Size = new Size(328, 25);
+            domainTextBox.TabIndex = 1;
             // 
             // label2
             // 
@@ -65,14 +65,14 @@
             label2.TabIndex = 2;
             label2.Text = "Логин:";
             // 
-            // textBox2
+            // loginTextBox
             // 
-            textBox2.BorderStyle = BorderStyle.FixedSingle;
-            textBox2.Font = new Font("Segoe UI", 10F);
-            textBox2.Location = new Point(77, 83);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(328, 25);
-            textBox2.TabIndex = 3;
+            loginTextBox.BorderStyle = BorderStyle.FixedSingle;
+            loginTextBox.Font = new Font("Segoe UI", 10F);
+            loginTextBox.Location = new Point(77, 83);
+            loginTextBox.Name = "loginTextBox";
+            loginTextBox.Size = new Size(328, 25);
+            loginTextBox.TabIndex = 3;
             // 
             // label3
             // 
@@ -84,37 +84,37 @@
             label3.TabIndex = 4;
             label3.Text = "Пароль:";
             // 
-            // textBox3
+            // passwordTextBox
             // 
-            textBox3.BorderStyle = BorderStyle.FixedSingle;
-            textBox3.Location = new Point(77, 130);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(328, 25);
-            textBox3.TabIndex = 5;
+            passwordTextBox.BorderStyle = BorderStyle.FixedSingle;
+            passwordTextBox.Location = new Point(77, 130);
+            passwordTextBox.Name = "passwordTextBox";
+            passwordTextBox.Size = new Size(328, 25);
+            passwordTextBox.TabIndex = 5;
             // 
-            // button1
+            // ConnectBtn
             // 
-            button1.Location = new Point(144, 175);
-            button1.Name = "button1";
-            button1.Size = new Size(157, 34);
-            button1.TabIndex = 6;
-            button1.Text = "Связать";
-            button1.UseVisualStyleBackColor = true;
+            ConnectBtn.Location = new Point(144, 175);
+            ConnectBtn.Name = "ConnectBtn";
+            ConnectBtn.Size = new Size(157, 34);
+            ConnectBtn.TabIndex = 6;
+            ConnectBtn.Text = "Связать";
+            ConnectBtn.UseVisualStyleBackColor = true;
             // 
-            // APISettingsFrom
+            // APISettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(563, 219);
-            Controls.Add(button1);
-            Controls.Add(textBox3);
+            Controls.Add(ConnectBtn);
+            Controls.Add(passwordTextBox);
             Controls.Add(label3);
-            Controls.Add(textBox2);
+            Controls.Add(loginTextBox);
             Controls.Add(label2);
-            Controls.Add(textBox1);
+            Controls.Add(domainTextBox);
             Controls.Add(label1);
             Font = new Font("Segoe UI", 10F);
-            Name = "APISettingsFrom";
+            Name = "APISettingsForm";
             Text = "Настройки API";
             ResumeLayout(false);
             PerformLayout();
@@ -123,11 +123,11 @@
         #endregion
 
         private Label label1;
-        private TextBox textBox1;
+        private TextBox domainTextBox;
         private Label label2;
-        private TextBox textBox2;
+        private TextBox loginTextBox;
         private Label label3;
-        private TextBox textBox3;
-        private Button button1;
+        private TextBox passwordTextBox;
+        private Button ConnectBtn;
     }
 }
