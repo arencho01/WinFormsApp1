@@ -1,3 +1,5 @@
+using System.Xml.Serialization;
+
 namespace WinFormsApp1
 {
     public partial class Form1 : Form
@@ -58,7 +60,7 @@ namespace WinFormsApp1
             {
                 if (File.Exists("settings.xml"))
                 {
-                    var serializer = new System.Xml.Serialization.XmlSerializer(typeof(ApiSettings));
+                    XmlSerializer serializer = new XmlSerializer(typeof(ApiSettings));
 
                     using var reader = new StreamReader("settings.xml");
 
