@@ -62,11 +62,20 @@ namespace WinFormsApp1
 
                     using var reader = new StreamReader("settings.xml");
 
-                    _settings = (ApiSettings)serializer.Deserialize(reader);
+                    var result = serializer.Deserialize(reader);
 
-                    ClientComboBox.Enabled = true;
-
-                    MessageBox.Show("Настройки подключения загружены!", "Успешно", MessageBoxButtons.OK);
+                    if (result is ApiSettings loadedSettings)
+                    {
+                        _settings = loadedSettings;
+                        ClientComboBox.Enabled = true;
+                        MessageBox.Show("Настройки подключения загружены!", "Успешно", MessageBoxButtons.OK);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Файл настроек поврежден", "Ошибка", MessageBoxButtons.OK);
+                        _settings = new ApiSettings();
+                        ClientComboBox.Enabled = false;
+                    }
                 }
                 else
                 {

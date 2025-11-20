@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WinFormsApp1
 {
@@ -34,9 +35,16 @@ namespace WinFormsApp1
 
                     using var reader = new StreamReader("settings.xml");
 
-                    var settings = (ApiSettings)serializer.Deserialize(reader);
+                    var result = serializer.Deserialize(reader);
 
-                    domainTextBox.Text = settings.Domain;
+                    if (result is ApiSettings settings)
+                    {
+                        domainTextBox.Text = settings.Domain;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ошибка: неверный формат файла настроек");
+                    }
                 }
                 catch (Exception ex)
                 {
