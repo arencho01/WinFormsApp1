@@ -4,7 +4,9 @@ namespace WinFormsApp1
 {
     public partial class Form1 : Form
     {
-        private ApiSettings _settings;
+        private ApiSettings? _settings;
+        private VetmanagerApiService? _apiService;
+
         public Form1()
         {
             InitializeComponent();
@@ -69,8 +71,12 @@ namespace WinFormsApp1
                     if (result is ApiSettings loadedSettings)
                     {
                         _settings = loadedSettings;
+
+                        _apiService = new VetmanagerApiService(_settings.Domain, _settings.Token);
+
                         ClientComboBox.Enabled = true;
-                        MessageBox.Show("Настройки подключения загружены!", "Успешно", MessageBoxButtons.OK);
+
+                        LoadClientsAsync();
                     }
                     else
                     {
@@ -100,6 +106,43 @@ namespace WinFormsApp1
             AddBtn.Enabled = false;
             EditBtn.Enabled = false;
             DeleteBtn.Enabled = false;
+        }
+
+        private async void LoadClientsAsync()
+        {
+            try
+            {
+                ClientComboBox.Enabled = false;
+                ClientComboBox.Text = "Загрузка клиентов...";
+
+                if (_apiService == null)
+                {
+                    MessageBox.Show("API сервис не инициализирован", "Ошибка");
+                    return;
+                }
+
+                var clients = await _apiService.GetClientsAsync();
+
+                ClientComboBox.BeginUpdate();
+                ClientComboBox.Items.Clear();
+
+                foreach (var client in clients)
+                {
+                    ClientComboBox.Items.Add(client);
+                }
+
+                ClientComboBox.EndUpdate();
+                ClientComboBox.Enabled = true;
+                ClientComboBox.Text = "";
+
+                MessageBox.Show($"Загружено клиентов: {clients.Length}", "Успешно");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки клиентов: {ex.Message}", "Ошибка");
+                ClientComboBox.Enabled = true;
+                ClientComboBox.Text = "Ошибка загрузки";
+            }
         }
     }
 }
