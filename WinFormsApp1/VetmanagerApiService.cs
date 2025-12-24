@@ -32,7 +32,7 @@ namespace WinFormsApp1
         {
             using var client = CreateHttpClient();
 
-            var url = $"https://{_domain}.vetmanager.ru/rest/api/clients";
+            var url = $"https://{_domain}.vetmanager2.ru/rest/api/clients";
 
             var response = await client.GetAsync(url);
 
@@ -57,7 +57,7 @@ namespace WinFormsApp1
 
                 var authClient = new HttpClient();
                 var response = await authClient.PostAsync(
-                    $"https://{domain}.vetmanager.ru/token_auth.php",
+                    $"https://{domain}.vetmanager2.ru/token_auth.php",
                     formData
                 );
 
