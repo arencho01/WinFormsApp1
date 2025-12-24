@@ -79,5 +79,80 @@ namespace WinFormsApp1
                 throw new Exception($"Ошибка получения токена: {ex.Message}");
             }
         }
+
+        public async Task<Pet[]> GetPetsByClientIdAsync(int clientId)
+        {
+            using var client = CreateHttpClient();
+            var url = $"https://{_domain}.vetmanager2.ru/rest/api/pets?owner_id={clientId}";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                using JsonDocument document = JsonDocument.Parse(json);
+                var root = document.RootElement;
+
+                if (root.TryGetProperty("data", out var data))
+                {
+                    if (data.TryGetProperty("pet", out var petsArray))
+                    {
+                        return ParsePetsFromJson(petsArray);
+                    }
+                    else if (data.ValueKind == JsonValueKind.Array)
+                    {
+                        return ParsePetsFromJson(data);
+                    }
+                }
+                else if (root.ValueKind == JsonValueKind.Array)
+                {
+                    return ParsePetsFromJson(root);
+                }
+            }
+            catch
+            {
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<Pet>>(json);
+                return apiResponse?.Data ?? Array.Empty<Pet>();
+            }
+
+            return Array.Empty<Pet>();
+        }
+
+        private Pet[] ParsePetsFromJson(JsonElement jsonArray)
+        {
+            var pets = new List<Pet>();
+
+            foreach (var petJson in jsonArray.EnumerateArray())
+            {
+                var pet = new Pet();
+
+                if (petJson.TryGetProperty("id", out var id)) pet.Id = id.GetInt32();
+                if (petJson.TryGetProperty("alias", out var alias)) pet.Alias = alias.GetString() ?? "";
+                if (petJson.TryGetProperty("owner_id", out var ownerId)) pet.OwnerId = ownerId.GetInt32();
+
+                if (petJson.TryGetProperty("type_id", out var typeId)) pet.TypeId = typeId.GetInt32();
+                else if (petJson.TryGetProperty("pet_type_id", out var petTypeId)) pet.TypeId = petTypeId.GetInt32();
+
+                if (petJson.TryGetProperty("breed_id", out var breedId)) pet.BreedId = breedId.GetInt32();
+
+                if (petJson.TryGetProperty("sex", out var sex))
+                {
+                    pet.Sex = sex.GetString() ?? "";
+                    pet.Sex = pet.Sex.ToLower() switch
+                    {
+                        "male" => "Самец",
+                        "female" => "Самка",
+                        "castrated" => "Кастрированный",
+                        "sterialized" => "Стерилизованный",
+                        _ => "Неизвестно"
+                    };
+                }
+
+                pets.Add(pet);
+            }
+
+            return pets.ToArray();
+        }
     }
 }
