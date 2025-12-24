@@ -37,5 +37,34 @@ namespace WinFormsApp1
         public int TypeId { get; set; }
         public int BreedId { get; set; }
         public string Sex { get; set; } = "";
+
+        public string TypeName { get; set; } = "";
+        public string BreedName { get; set; } = "";
+
+        public int OwnerId { get; set; }
+    }
+}
+
+public class PetType
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+
+        public override string ToString()
+        {
+            return Title;
+        }
+    }
+
+    public class Breed
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public int PetTypeId { get; set; }
+
+        public override string ToString()
+        {
+            return Title;
+        }
     }
 }
