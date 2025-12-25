@@ -6,6 +6,12 @@ namespace WinFormsApp1
     {
         private ApiSettings? _settings;
         private VetmanagerApiService? _apiService;
+        private DataGridView? _petsGridView;
+
+        private List<PetType> _petTypes = new();
+        private List<Breed> _breeds = new();
+
+        private Client? _selectedClient;
 
         public Form1()
         {
@@ -18,6 +24,7 @@ namespace WinFormsApp1
             DeleteBtn.Click += DeleteBtn_Click;
             ClientComboBox.SelectedIndexChanged += ClientСomboBox_SelectedIndexChanged;
 
+            InitializePetsGrid();
             UpdateButtonsState();
             LoadSettings();
         }
@@ -56,7 +63,7 @@ namespace WinFormsApp1
 
         }
 
-        private void LoadSettings()
+        private async void LoadSettings()
         {
             try
             {
@@ -76,7 +83,9 @@ namespace WinFormsApp1
 
                         ClientComboBox.Enabled = true;
 
-                        LoadClientsAsync();
+                        await LoadClientsAsync();
+                        await LoadReferenceDataAsync();
+
                     }
                     else
                     {
@@ -143,6 +152,34 @@ namespace WinFormsApp1
                 ClientComboBox.Enabled = true;
                 ClientComboBox.Text = "Ошибка загрузки";
             }
+        }
+
+        private void InitializePetsGrid()
+        {
+            _petsGridView = new DataGridView
+            {
+                Location = new Point(12, 110),
+                Size = new Size(776, 388),
+                ReadOnly = true,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                AllowUserToAddRows = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+            };
+
+            _petsGridView.Columns.Add("Id", "ID");
+            _petsGridView.Columns.Add("Alias", "Кличка");
+            _petsGridView.Columns.Add("TypeName", "Вид");
+            _petsGridView.Columns.Add("BreedName", "Порода");
+            _petsGridView.Columns.Add("Sex", "Пол");
+
+            _petsGridView.Columns["Id"].Visible = false;
+            _petsGridView.SelectionChanged += PetsGridView_SelectionChanged;
+            Controls.Add(_petsGridView);
+        }
+
+        private void PetsGridView_SelectionChanged(object? sender, EventArgs e)
+        {
+            UpdateButtonsState();
         }
     }
 }
