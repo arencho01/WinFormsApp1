@@ -127,26 +127,39 @@ namespace WinFormsApp1
             {
                 var pet = new Pet();
 
-                if (petJson.TryGetProperty("id", out var id)) pet.Id = id.GetInt32();
-                if (petJson.TryGetProperty("alias", out var alias)) pet.Alias = alias.GetString() ?? "";
-                if (petJson.TryGetProperty("owner_id", out var ownerId)) pet.OwnerId = ownerId.GetInt32();
+                if (petJson.TryGetProperty("id", out var id))
+                {
+                    pet.Id = id.GetInt32();
+                }
 
-                if (petJson.TryGetProperty("type_id", out var typeId)) pet.TypeId = typeId.GetInt32();
-                else if (petJson.TryGetProperty("pet_type_id", out var petTypeId)) pet.TypeId = petTypeId.GetInt32();
+                if (petJson.TryGetProperty("alias", out var alias))
+                {
+                    pet.Alias = alias.GetString() ?? "";
+                }
 
-                if (petJson.TryGetProperty("breed_id", out var breedId)) pet.BreedId = breedId.GetInt32();
+                if (petJson.TryGetProperty("owner_id", out var ownerId))
+                {
+                    pet.OwnerId = ownerId.GetInt32();
+                }
+
+                if (petJson.TryGetProperty("type_id", out var typeId))
+                {
+                    pet.TypeId = typeId.GetInt32();
+                }
+
+                else if (petJson.TryGetProperty("pet_type_id", out var petTypeId))
+                {
+                    pet.TypeId = petTypeId.GetInt32();
+                }
+
+                if (petJson.TryGetProperty("breed_id", out var breedId))
+                {
+                    pet.BreedId = breedId.GetInt32();
+                }
 
                 if (petJson.TryGetProperty("sex", out var sex))
                 {
                     pet.Sex = sex.GetString() ?? "";
-                    pet.Sex = pet.Sex.ToLower() switch
-                    {
-                        "male" => "Самец",
-                        "female" => "Самка",
-                        "castrated" => "Кастрированный",
-                        "sterialized" => "Стерилизованный",
-                        _ => "Неизвестно"
-                    };
                 }
 
                 pets.Add(pet);
