@@ -76,5 +76,19 @@ namespace WinFormsApp1
 
             return apiResponse?.Data ?? Array.Empty<Client>();
         }
+
+        public async Task<Pet[]> GetPetsByClientIdAsync(int clientId)
+        {
+            using var client = CreateHttpClient();
+            var url = $"https://{_domain}.vetmanager2.ru/rest/api/pets?client_id={clientId}";
+
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Pet>>(json);
+
+            return apiResponse?.Data ?? Array.Empty<Pet>();
+        }
     }
 }
