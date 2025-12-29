@@ -28,23 +28,6 @@ namespace WinFormsApp1
             return client;
         }
 
-        public async Task<Client[]> GetClientsAsync()
-        {
-            using var client = CreateHttpClient();
-
-            var url = $"https://{_domain}.vetmanager.ru/rest/api/clients";
-
-            var response = await client.GetAsync(url);
-
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Client>>(json);
-
-            return apiResponse?.Data ?? Array.Empty<Client>();
-        }
-
         public async Task<string> GetTokenAsync(string domain, string login, string password)
         {
             try
@@ -78,6 +61,23 @@ namespace WinFormsApp1
 
                 throw new Exception($"Ошибка получения токена: {ex.Message}");
             }
+        }
+
+        public async Task<Client[]> GetClientsAsync()
+        {
+            using var client = CreateHttpClient();
+
+            var url = $"https://{_domain}.vetmanager.ru/rest/api/clients";
+
+            var response = await client.GetAsync(url);
+
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Client>>(json);
+
+            return apiResponse?.Data ?? Array.Empty<Client>();
         }
     }
 }
