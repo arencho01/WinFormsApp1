@@ -66,15 +66,12 @@ namespace WinFormsApp1
         public async Task<Client[]> GetClientsAsync()
         {
             using var client = CreateHttpClient();
-
             var url = $"https://{_domain}.vetmanager.ru/rest/api/clients";
 
             var response = await client.GetAsync(url);
-
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-
             var apiResponse = JsonSerializer.Deserialize<ApiResponse<Client>>(json);
 
             return apiResponse?.Data ?? Array.Empty<Client>();
