@@ -39,10 +39,8 @@ namespace WinFormsApp1
                 formData.Add(new StringContent("MyApp"), "app_name");
 
                 var authClient = new HttpClient();
-                var response = await authClient.PostAsync(
-                    $"https://{domain}.vetmanager.ru/token_auth.php",
-                    formData
-                );
+                var url = $"https://{domain}.vetmanager.ru/token_auth.php";
+                var response = await authClient.PostAsync(url,formData);
 
                 response.EnsureSuccessStatusCode();
 
@@ -65,17 +63,19 @@ namespace WinFormsApp1
 
         public async Task<Client[]> GetClientsAsync()
         {
-            using var client = CreateHttpClient();
-            var url = $"https://{_domain}.vetmanager.ru/rest/api/clients";
+                using var client = CreateHttpClient();
+                var url = $"https://{_domain}.vetmanager.ru/rest/api/clients";
 
-            var response = await client.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+                Console.WriteLine($"Отправляем запрос на: {url}");
 
-            var json = await response.Content.ReadAsStringAsync();
-            var apiResponse = JsonSerializer.Deserialize<ApiResponse<Client>>(json);
+                var response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
-            return apiResponse?.Data ?? Array.Empty<Client>();
-        }
+                var json = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<Client>>(json);
+
+                return apiResponse?.Data ?? Array.Empty<Client>();
+            }
 
         public async Task<Pet[]> GetPetsByClientIdAsync(int clientId)
         {
