@@ -17,9 +17,15 @@ namespace WinFormsApp1
             AddBtn.Click += AddBtn_Click;
             DeleteBtn.Click += DeleteBtn_Click;
             ClientComboBox.SelectedIndexChanged += ClientСomboBox_SelectedIndexChanged;
+            PetsDataGridView.SelectionChanged += PetsDataGridView_SelectionChanged;
 
             UpdateButtonsState();
             LoadSettings();
+        }
+
+        private void PetsDataGridView_SelectionChanged(object? sender, EventArgs e)
+        {
+            UpdateButtonsState();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -51,9 +57,65 @@ namespace WinFormsApp1
             MessageBox.Show("Delete");
         }
 
-        private void ClientСomboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        private async void ClientСomboBox_SelectedIndexChanged(object? sender, EventArgs e)
         {
+            if (ClientComboBox.SelectedItem is Client selectedClient && _apiService != null)
+            {
+                try
+                {
+                    PetsDataGridView.Enabled = false;
+                    PetsDataGridView.DataSource = null;
 
+                    // Загружаем питомцев выбранного клиента
+                    var pets = await _apiService.GetPetsByClientIdAsync(selectedClient.Id);
+
+                    // Настраиваем DataGridView
+                    PetsDataGridView.AutoGenerateColumns = false;
+                    PetsDataGridView.Columns.Clear();
+
+                    // Добавляем колонки
+                    PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+                    {
+                        Name = "Id",
+                        DataPropertyName = "Id",
+                        HeaderText = "ID",
+                        Width = 50,
+                        Visible = false // Скрываем ID
+                    });
+
+                    PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+                    {
+                        Name = "Alias",
+                        DataPropertyName = "Alias",
+                        HeaderText = "Кличка",
+                        Width = 150
+                    });
+
+                    PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+                    {
+                        Name = "Sex",
+                        DataPropertyName = "Sex",
+                        HeaderText = "Пол",
+                        Width = 100
+                    });
+
+                    // Устанавливаем источник данных
+                    PetsDataGridView.DataSource = pets;
+                    PetsDataGridView.Enabled = true;
+                }
+                catch (Exception)
+                {
+                    PetsDataGridView.DataSource = null;
+                    PetsDataGridView.Enabled = true;
+                }
+            }
+            else
+            {
+                // Если клиент не выбран, очищаем таблицу
+                PetsDataGridView.DataSource = null;
+            }
+
+            UpdateButtonsState();
         }
 
         private void LoadSettings()
@@ -103,9 +165,13 @@ namespace WinFormsApp1
 
         private void UpdateButtonsState()
         {
-            AddBtn.Enabled = false;
-            EditBtn.Enabled = false;
-            DeleteBtn.Enabled = false;
+            // Кнопка Добавить активна, когда выбран клиент
+            AddBtn.Enabled = ClientComboBox.SelectedItem != null;
+
+            // Кнопки Редактировать и Удалить активны, когда выбран питомец
+            bool hasSelectedPet = PetsDataGridView.SelectedRows.Count > 0;
+            EditBtn.Enabled = hasSelectedPet;
+            DeleteBtn.Enabled = hasSelectedPet;
         }
 
         private async void LoadClientsAsync()

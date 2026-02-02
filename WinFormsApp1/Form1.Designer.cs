@@ -35,6 +35,7 @@
             label1 = new Label();
             ClientComboBox = new ComboBox();
             label2 = new Label();
+            PetsDataGridView = new DataGridView();
             SuspendLayout();
             // 
             // APISettingsBtn
@@ -100,12 +101,28 @@
             label2.Size = new Size(126, 19);
             label2.TabIndex = 6;
             label2.Text = "Питомцы клиента:";
+            //
+            // PetsDataGridView
+            //
+            PetsDataGridView.AllowUserToAddRows = false;
+            PetsDataGridView.AllowUserToDeleteRows = false;
+            PetsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            PetsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            PetsDataGridView.Location = new Point(12, 109);
+            PetsDataGridView.Name = "PetsDataGridView";
+            PetsDataGridView.ReadOnly = true;
+            PetsDataGridView.RowHeadersVisible = false;
+            PetsDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            PetsDataGridView.Size = new Size(776, 389);
+            PetsDataGridView.TabIndex = 7;
+            PetsDataGridView.SelectionChanged += PetsDataGridView_SelectionChanged;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 510);
+            Controls.Add(PetsDataGridView);
             Controls.Add(label2);
             Controls.Add(ClientComboBox);
             Controls.Add(label1);
@@ -129,5 +146,6 @@
         private Label label1;
         private ComboBox ClientComboBox;
         private Label label2;
+        private DataGridView PetsDataGridView;
     }
 }
