@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using System.Diagnostics; // tmp
 
 namespace WinFormsApp1
 {
@@ -66,7 +67,6 @@ namespace WinFormsApp1
                     PetsDataGridView.Enabled = false;
                     PetsDataGridView.DataSource = null;
 
-                    // Загружаем питомцев выбранного клиента
                     var pets = await _apiService.GetPetsByClientIdAsync(selectedClient.Id);
 
                     // Настраиваем DataGridView
@@ -80,7 +80,7 @@ namespace WinFormsApp1
                         DataPropertyName = "Id",
                         HeaderText = "ID",
                         Width = 50,
-                        Visible = false // Скрываем ID
+                        Visible = false
                     });
 
                     PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
@@ -111,7 +111,6 @@ namespace WinFormsApp1
             }
             else
             {
-                // Если клиент не выбран, очищаем таблицу
                 PetsDataGridView.DataSource = null;
             }
 
