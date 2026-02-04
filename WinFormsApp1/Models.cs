@@ -75,15 +75,18 @@ namespace WinFormsApp1
         public string Alias { get; set; } = "";
 
         [JsonPropertyName("type_id")]
-        public int? TypeId { get; set; }  // Изменили на int?
+        public int? TypeId { get; set; }
 
         [JsonPropertyName("breed_id")]
-        public int? BreedId { get; set; } // Изменили на int?
+        public int? BreedId { get; set; }
 
         [JsonPropertyName("sex")]
-        public string? Sex { get; set; }  // Изменили на string?
+        public string? Sex { get; set; }
 
         [JsonPropertyName("owner_id")]
         public int OwnerId { get; set; }
+
+        [JsonPropertyName("birthday")]
+        public string? Birthday { get; set; }
     }
 }
