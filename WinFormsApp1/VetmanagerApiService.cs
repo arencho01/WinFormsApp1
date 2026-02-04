@@ -148,7 +148,6 @@ namespace WinFormsApp1
                             pet.BreedId = breedIdElement.GetInt32();
                         }
 
-                        // Получаем дату рождения
                         if (petJson.TryGetProperty("birthday", out var birthdayElement))
                         {
                             pet.Birthday = birthdayElement.GetString();

@@ -20,8 +20,88 @@ namespace WinFormsApp1
             ClientComboBox.SelectedIndexChanged += ClientСomboBox_SelectedIndexChanged;
             PetsDataGridView.SelectionChanged += PetsDataGridView_SelectionChanged;
 
+            InitializePetsDataGridView();
+
+
             UpdateButtonsState();
             LoadSettings();
+        }
+
+        private void InitializePetsDataGridView()
+        {
+            // Настраиваем DataGridView
+            PetsDataGridView.AutoGenerateColumns = false;
+            PetsDataGridView.Columns.Clear();
+
+            // 1. Колонка # (ID)
+            PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "Id",
+                DataPropertyName = "Id",
+                HeaderText = "#",
+                Width = 50,
+                Visible = true,
+                ReadOnly = true
+            });
+
+            // 2. Колонка Кличка
+            PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "Alias",
+                DataPropertyName = "Alias",
+                HeaderText = "Кличка",
+                Width = 150,
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                ReadOnly = true
+            });
+
+            // 3. Колонка Порода
+            PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "BreedId",
+                DataPropertyName = "BreedId",
+                HeaderText = "Порода",
+                Width = 100,
+                ReadOnly = true
+            });
+
+            // 4. Колонка Вид
+            PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "TypeId",
+                DataPropertyName = "TypeId",
+                HeaderText = "Вид",
+                Width = 80,
+                ReadOnly = true
+            });
+
+            // 5. Колонка Пол
+            PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "Sex",
+                DataPropertyName = "Sex",
+                HeaderText = "Пол",
+                Width = 80,
+                ReadOnly = true
+            });
+
+            // 6. Колонка Дата рождения
+            PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                Name = "Birthday",
+                DataPropertyName = "Birthday",
+                HeaderText = "Дата рожд.",
+                Width = 100,
+                ReadOnly = true
+            });
+
+            // Настраиваем стиль заголовков
+            PetsDataGridView.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            PetsDataGridView.ColumnHeadersHeight = 35;
+            PetsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+            // Настраиваем стиль строк
+            PetsDataGridView.GridColor = SystemColors.ControlDark; // Цвет линий сетки
         }
 
         private void PetsDataGridView_SelectionChanged(object? sender, EventArgs e)
@@ -65,41 +145,10 @@ namespace WinFormsApp1
                 try
                 {
                     PetsDataGridView.Enabled = false;
-                    PetsDataGridView.DataSource = null;
 
                     var pets = await _apiService.GetPetsByClientIdAsync(selectedClient.Id);
 
-                    // Настраиваем DataGridView
-                    PetsDataGridView.AutoGenerateColumns = false;
-                    PetsDataGridView.Columns.Clear();
-
-                    // Добавляем колонки
-                    PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
-                    {
-                        Name = "Id",
-                        DataPropertyName = "Id",
-                        HeaderText = "ID",
-                        Width = 50,
-                        Visible = false
-                    });
-
-                    PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
-                    {
-                        Name = "Alias",
-                        DataPropertyName = "Alias",
-                        HeaderText = "Кличка",
-                        Width = 150
-                    });
-
-                    PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
-                    {
-                        Name = "Sex",
-                        DataPropertyName = "Sex",
-                        HeaderText = "Пол",
-                        Width = 100
-                    });
-
-                    // Устанавливаем источник данных
+                    // Просто устанавливаем источник данных
                     PetsDataGridView.DataSource = pets;
                     PetsDataGridView.Enabled = true;
                 }
