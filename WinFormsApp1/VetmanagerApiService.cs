@@ -169,59 +169,5 @@ namespace WinFormsApp1
                 return Array.Empty<Pet>();
             }
         }
-
-        private Pet[] ParsePetsResponse(string json)
-        {
-            try
-            {
-                using JsonDocument document = JsonDocument.Parse(json);
-
-                // Проверяем success
-                if (document.RootElement.TryGetProperty("success", out var successElement))
-                {
-                    if (!successElement.GetBoolean())
-                    {
-                        Debug.WriteLine("API вернул success: false");
-                        return Array.Empty<Pet>();
-                    }
-                }
-
-                // Ищем data
-                if (document.RootElement.TryGetProperty("data", out var dataElement))
-                {
-                    // Если data - массив
-                    if (dataElement.ValueKind == JsonValueKind.Array)
-                    {
-                        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                        var pets = JsonSerializer.Deserialize<Pet[]>(dataElement.GetRawText(), options);
-                        return pets ?? Array.Empty<Pet>();
-                    }
-                    // Если data - объект с pet/pets
-                    else if (dataElement.ValueKind == JsonValueKind.Object)
-                    {
-                        if (dataElement.TryGetProperty("pet", out var petElement))
-                        {
-                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                            var pets = JsonSerializer.Deserialize<Pet[]>(petElement.GetRawText(), options);
-                            return pets ?? Array.Empty<Pet>();
-                        }
-                        else if (dataElement.TryGetProperty("pets", out var petsElement))
-                        {
-                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                            var pets = JsonSerializer.Deserialize<Pet[]>(petsElement.GetRawText(), options);
-                            return pets ?? Array.Empty<Pet>();
-                        }
-                    }
-                }
-
-                Debug.WriteLine($"Неизвестный формат JSON: {json}");
-                return Array.Empty<Pet>();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Ошибка парсинга JSON: {ex.Message}");
-                return Array.Empty<Pet>();
-            }
-        }
     }
 }

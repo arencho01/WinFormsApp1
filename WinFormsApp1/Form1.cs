@@ -29,11 +29,9 @@ namespace WinFormsApp1
 
         private void InitializePetsDataGridView()
         {
-            // Настраиваем DataGridView
             PetsDataGridView.AutoGenerateColumns = false;
             PetsDataGridView.Columns.Clear();
 
-            // 1. Колонка # (ID)
             PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
             {
                 Name = "Id",
@@ -44,7 +42,6 @@ namespace WinFormsApp1
                 ReadOnly = true
             });
 
-            // 2. Колонка Кличка
             PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
             {
                 Name = "Alias",
@@ -55,7 +52,6 @@ namespace WinFormsApp1
                 ReadOnly = true
             });
 
-            // 3. Колонка Порода
             PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
             {
                 Name = "BreedId",
@@ -65,7 +61,6 @@ namespace WinFormsApp1
                 ReadOnly = true
             });
 
-            // 4. Колонка Вид
             PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
             {
                 Name = "TypeId",
@@ -75,7 +70,6 @@ namespace WinFormsApp1
                 ReadOnly = true
             });
 
-            // 5. Колонка Пол
             PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
             {
                 Name = "Sex",
@@ -85,7 +79,6 @@ namespace WinFormsApp1
                 ReadOnly = true
             });
 
-            // 6. Колонка Дата рождения
             PetsDataGridView.Columns.Add(new DataGridViewTextBoxColumn()
             {
                 Name = "Birthday",
@@ -130,7 +123,11 @@ namespace WinFormsApp1
 
         private void AddBtn_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Add");
+            if (ClientComboBox.SelectedItem is Client selectedClient && _apiService != null)
+            {
+                var editForm = new PetEditForm(_apiService, selectedClient.Id);
+                editForm.ShowDialog();
+            }
         }
 
         private void DeleteBtn_Click(object? sender, EventArgs e)

@@ -36,6 +36,7 @@
             ClientComboBox = new ComboBox();
             label2 = new Label();
             PetsDataGridView = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)PetsDataGridView).BeginInit();
             SuspendLayout();
             // 
             // APISettingsBtn
@@ -84,7 +85,7 @@
             label1.TabIndex = 4;
             label1.Text = "Клиент:";
             // 
-            // comboBox1
+            // ClientComboBox
             // 
             ClientComboBox.FormattingEnabled = true;
             ClientComboBox.Location = new Point(74, 9);
@@ -101,9 +102,9 @@
             label2.Size = new Size(126, 19);
             label2.TabIndex = 6;
             label2.Text = "Питомцы клиента:";
-            //
+            // 
             // PetsDataGridView
-            //
+            // 
             PetsDataGridView.AllowUserToAddRows = false;
             PetsDataGridView.AllowUserToDeleteRows = false;
             PetsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -133,6 +134,7 @@
             Font = new Font("Segoe UI", 10F);
             Name = "Form1";
             Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)PetsDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
