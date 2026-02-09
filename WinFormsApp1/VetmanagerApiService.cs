@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -167,6 +168,142 @@ namespace WinFormsApp1
             catch (Exception)
             {
                 return Array.Empty<Pet>();
+            }
+        }
+
+        public async Task<PetType[]> GetPetTypesAsync()
+        {
+            try
+            {
+                using var client = CreateHttpClient();
+                var url = $"https://{_domain}.vetmanager2.ru/rest/api/petType";
+
+                var response = await client.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Array.Empty<PetType>();
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                using JsonDocument document = JsonDocument.Parse(json);
+
+                if (document.RootElement.TryGetProperty("success", out var successElement) &&
+                    successElement.GetBoolean())
+                {
+                    if (document.RootElement.TryGetProperty("data", out var dataElement))
+                    {
+                        // Проверяем разные форматы
+                        if (dataElement.ValueKind == JsonValueKind.Object)
+                        {
+                            if (dataElement.TryGetProperty("petType", out var petTypeElement))
+                            {
+                                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                                return JsonSerializer.Deserialize<PetType[]>(petTypeElement.GetRawText(), options)
+                                       ?? Array.Empty<PetType>();
+                            }
+                        }
+                        else if (dataElement.ValueKind == JsonValueKind.Array)
+                        {
+                            // Если data - сразу массив
+                            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                            return JsonSerializer.Deserialize<PetType[]>(dataElement.GetRawText(), options)
+                                   ?? Array.Empty<PetType>();
+                        }
+                    }
+                }
+
+                return Array.Empty<PetType>();
+            }
+            catch (Exception)
+            {
+                return Array.Empty<PetType>();
+            }
+        }
+
+        public async Task<PetBreed[]> GetBreedsAsync()
+        {
+            try
+            {
+                using var client = CreateHttpClient();
+
+                // Пробуем с пагинацией - получить все породы
+                var url = $"https://{_domain}.vetmanager2.ru/rest/api/breed?limit=500";
+
+                Debug.WriteLine($"Запрос пород: {url}");
+
+                var response = await client.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine($"Ошибка: {response.StatusCode}");
+                    return Array.Empty<PetBreed>();
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"Ответ пород (первые 500 символов): {json.Substring(0, Math.Min(500, json.Length))}...");
+
+                using JsonDocument document = JsonDocument.Parse(json);
+
+                if (document.RootElement.TryGetProperty("success", out var successElement) &&
+                    successElement.GetBoolean())
+                {
+                    if (document.RootElement.TryGetProperty("data", out var dataElement))
+                    {
+                        if (dataElement.ValueKind == JsonValueKind.Object)
+                        {
+                            if (dataElement.TryGetProperty("breed", out var breedElement))
+                            {
+                                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                                var breeds = JsonSerializer.Deserialize<PetBreed[]>(breedElement.GetRawText(), options)
+                                           ?? Array.Empty<PetBreed>();
+
+                                // Проверим, есть ли породы для собак
+                                var dogBreeds = breeds.Where(b => b.PetTypeId == 2).ToArray();
+                                Debug.WriteLine($"Всего пород: {breeds.Length}");
+                                Debug.WriteLine($"Пород для собак (PetTypeId=2): {dogBreeds.Length}");
+
+                                return breeds;
+                            }
+                        }
+                    }
+                }
+
+                return Array.Empty<PetBreed>();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка в GetBreedsAsync: {ex.Message}");
+                return Array.Empty<PetBreed>();
+            }
+        }
+
+        public async Task<PetBreed[]> GetBreedsByTypeIdAsync(int typeId)
+        {
+            try
+            {
+                var allBreeds = await GetBreedsAsync();
+
+                // Отладка: выведем все породы с их TypeId
+                Debug.WriteLine($"Всего пород: {allBreeds.Length}");
+                Debug.WriteLine($"Ищем породы для typeId={typeId}");
+
+                foreach (var breed in allBreeds)
+                {
+                    Debug.WriteLine($"Порода: {breed.Title}, PetTypeId: {breed.PetTypeId}");
+                }
+
+                var filteredBreeds = allBreeds.Where(b => b.PetTypeId == typeId).ToArray();
+
+                Debug.WriteLine($"Найдено пород для typeId={typeId}: {filteredBreeds.Length}");
+
+                return filteredBreeds;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка в GetBreedsByTypeIdAsync: {ex.Message}");
+                return Array.Empty<PetBreed>();
             }
         }
     }

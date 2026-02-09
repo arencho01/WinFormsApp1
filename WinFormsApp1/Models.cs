@@ -89,4 +89,35 @@ namespace WinFormsApp1
         [JsonPropertyName("birthday")]
         public string? Birthday { get; set; }
     }
+
+    public class PetType
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; } = "";
+
+        public override string ToString()
+        {
+            return Title;
+        }
+    }
+
+    public class PetBreed
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; } = "";
+
+        [JsonPropertyName("pet_type_id")]
+        public int PetTypeId { get; set; }
+
+        public override string ToString()
+        {
+            return Title;
+        }
+    }
 }

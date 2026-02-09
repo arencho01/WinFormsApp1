@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace WinFormsApp1
 {
@@ -43,6 +44,85 @@ namespace WinFormsApp1
 
             saveBtn.Click += SaveBtn_Click;
             cancelBtn.Click += CancelBtn_Click;
+            petTypeComboBox.SelectedIndexChanged += PetTypeComboBox_SelectedIndexChanged;
+
+            this.Load += PetEditForm_Load;
+        }
+
+        private async void PetEditForm_Load(object? sender, EventArgs e)
+        {
+            await LoadPetTypesAsync();
+        }
+
+        private async Task LoadPetTypesAsync()
+        {
+            try
+            {
+                var petTypes = await _apiService.GetPetTypesAsync();
+
+                // Для отладки
+                MessageBox.Show($"Загружено видов: {petTypes.Length}", "Отладка");
+
+                petTypeComboBox.BeginUpdate();
+                petTypeComboBox.Items.Clear();
+
+                foreach (var petType in petTypes)
+                {
+                    petTypeComboBox.Items.Add(petType);
+                }
+
+                petTypeComboBox.EndUpdate();
+
+                if (petTypeComboBox.Items.Count > 0)
+                {
+                    petTypeComboBox.SelectedIndex = 0;
+                    await LoadBreedsForSelectedTypeAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки видов: {ex.Message}", "Ошибка");
+            }
+        }
+
+        private async void PetTypeComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            await LoadBreedsForSelectedTypeAsync();
+        }
+
+        private async Task LoadBreedsForSelectedTypeAsync()
+        {
+            if (petTypeComboBox.SelectedItem is PetType selectedType)
+            {
+                try
+                {
+                    Debug.WriteLine($"Выбран вид: {selectedType.Title}, ID: {selectedType.Id}");
+
+                    var breeds = await _apiService.GetBreedsByTypeIdAsync(selectedType.Id);
+
+                    Debug.WriteLine($"Получено пород: {breeds.Length}");
+
+                    petBreedComboBox.BeginUpdate();
+                    petBreedComboBox.Items.Clear();
+
+                    foreach (var breed in breeds)
+                    {
+                        petBreedComboBox.Items.Add(breed);
+                        Debug.WriteLine($"Добавлена порода: {breed.Title}, PetTypeId: {breed.PetTypeId}");
+                    }
+
+                    petBreedComboBox.EndUpdate();
+
+                    if (petBreedComboBox.Items.Count > 0)
+                    {
+                        petBreedComboBox.SelectedIndex = 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка загрузки пород: {ex.Message}", "Ошибка");
+                }
+            }
         }
 
         private void LoadPetData(Pet pet)
@@ -63,8 +143,8 @@ namespace WinFormsApp1
                 }
             }
 
-            // TODO: Загрузить виды и породы из API
-            // TODO: Установить выбранные вид и породу
+            // TODO: Установить выбранные вид и породу (после загрузки данных)
+            // Нужно дождаться загрузки видов и пород, затем установить выбранные
 
             // Устанавливаем дату рождения
             if (!string.IsNullOrEmpty(pet.Birthday) &&
