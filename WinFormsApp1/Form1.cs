@@ -126,7 +126,16 @@ namespace WinFormsApp1
             if (ClientComboBox.SelectedItem is Client selectedClient && _apiService != null)
             {
                 var editForm = new PetEditForm(_apiService, selectedClient.Id);
-                editForm.ShowDialog();
+
+                // Показываем форму как диалоговое окно и проверяем результат
+                var result = editForm.ShowDialog();
+
+                // Если пользователь нажал "Сохранить" (DialogResult.OK)
+                if (result == DialogResult.OK)
+                {
+                    // Обновляем список питомцев для выбранного клиента
+                    RefreshPetsForSelectedClient();
+                }
             }
         }
 
@@ -253,6 +262,38 @@ namespace WinFormsApp1
                 MessageBox.Show($"Ошибка загрузки клиентов: {ex.Message}", "Ошибка");
                 ClientComboBox.Enabled = true;
                 ClientComboBox.Text = "Ошибка загрузки";
+            }
+        }
+
+        private async void RefreshPetsForSelectedClient()
+        {
+            if (ClientComboBox.SelectedItem is Client selectedClient && _apiService != null)
+            {
+                try
+                {
+                    PetsDataGridView.Enabled = false;
+                    PetsDataGridView.DataSource = null;
+
+                    // Показываем сообщение о загрузке
+                    PetsDataGridView.Rows.Clear();
+                    PetsDataGridView.Rows.Add(new object[] { "Загрузка...", "", "", "", "", "" });
+
+                    var pets = await _apiService.GetPetsByClientIdAsync(selectedClient.Id);
+
+                    PetsDataGridView.DataSource = pets;
+                    PetsDataGridView.Enabled = true;
+
+                    // Необязательно: покажем количество питомцев в статусной строке
+                    Debug.WriteLine($"Загружено питомцев: {pets.Length}");
+
+                    UpdateButtonsState();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при обновлении списка питомцев: {ex.Message}", "Ошибка");
+                    PetsDataGridView.DataSource = null;
+                    PetsDataGridView.Enabled = true;
+                }
             }
         }
     }

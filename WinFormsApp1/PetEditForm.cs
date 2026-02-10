@@ -181,6 +181,7 @@ namespace WinFormsApp1
                     MessageBox.Show("Питомец успешно добавлен!", "Успех");
                 }
 
+                // ЭТА СТРОКА УСТАНАВЛИВАЕТ DialogResult.OK
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -196,8 +197,41 @@ namespace WinFormsApp1
 
         private async Task AddPetAsync()
         {
-            // TODO: Реализовать вызов API для создания питомца
-            throw new NotImplementedException("Метод добавления питомца еще не реализован");
+            // Создаем нового питомца
+            var pet = new Pet
+            {
+                Alias = petAliasTextBox.Text.Trim(),
+                OwnerId = _ownerId,
+                Sex = petSexComboBox.SelectedItem?.ToString()
+            };
+
+            // Добавляем выбранный вид, если есть
+            if (petTypeComboBox.SelectedItem is PetType selectedType)
+            {
+                pet.TypeId = selectedType.Id;
+            }
+
+            // Добавляем выбранную породу, если есть
+            if (petBreedComboBox.SelectedItem is PetBreed selectedBreed)
+            {
+                pet.BreedId = selectedBreed.Id;
+            }
+
+            // Добавляем дату рождения
+            pet.Birthday = petDayOfBirthPicker.Value.ToString("yyyy-MM-dd");
+
+            try
+            {
+                // Вызываем API для создания питомца
+                var createdPet = await _apiService.CreatePetAsync(pet);
+
+                // Можно вывести информацию о созданном питомце
+                Debug.WriteLine($"Питомец создан с ID: {createdPet.Id}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Не удалось создать питомца: {ex.Message}");
+            }
         }
 
         private async Task EditPetAsync()

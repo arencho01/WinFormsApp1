@@ -306,5 +306,88 @@ namespace WinFormsApp1
                 return Array.Empty<PetBreed>();
             }
         }
+
+        public async Task<Pet> CreatePetAsync(Pet pet)
+        {
+            try
+            {
+                using var client = CreateHttpClient();
+
+                var url = $"https://{_domain}.vetmanager2.ru/rest/api/pet";
+
+                // Создаем объект для отправки
+                var requestData = new Dictionary<string, object>
+                {
+                    ["alias"] = pet.Alias,
+                    ["owner_id"] = pet.OwnerId,
+                    ["sex"] = pet.Sex ?? "unknown"
+                };
+
+                // Добавляем опциональные поля, если они есть
+                if (pet.TypeId.HasValue)
+                {
+                    requestData["type_id"] = pet.TypeId.Value;
+                }
+
+                if (pet.BreedId.HasValue)
+                {
+                    requestData["breed_id"] = pet.BreedId.Value;
+                }
+
+                if (!string.IsNullOrEmpty(pet.Birthday))
+                {
+                    requestData["birthday"] = pet.Birthday;
+                }
+
+                // Сериализуем в JSON
+                var json = JsonSerializer.Serialize(requestData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                Debug.WriteLine($"Отправляем запрос создания питомца: {url}");
+                Debug.WriteLine($"Данные: {json}");
+
+                var response = await client.PostAsync(url, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Ошибка создания: {response.StatusCode}\n{errorContent}");
+                    throw new Exception($"Ошибка создания питомца: {response.StatusCode}");
+                }
+
+                var responseJson = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"Ответ создания питомца: {responseJson}");
+
+                using JsonDocument document = JsonDocument.Parse(responseJson);
+
+                if (document.RootElement.TryGetProperty("success", out var successElement) &&
+                    successElement.GetBoolean())
+                {
+                    if (document.RootElement.TryGetProperty("data", out var dataElement) &&
+                        dataElement.TryGetProperty("pet", out var petElement))
+                    {
+                        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                        // petElement может быть массивом с одним элементом
+                        if (petElement.ValueKind == JsonValueKind.Array && petElement.GetArrayLength() > 0)
+                        {
+                            var createdPet = JsonSerializer.Deserialize<Pet>(petElement[0].GetRawText(), options);
+                            return createdPet ?? throw new Exception("Не удалось десериализовать созданного питомца");
+                        }
+                        else if (petElement.ValueKind == JsonValueKind.Object)
+                        {
+                            var createdPet = JsonSerializer.Deserialize<Pet>(petElement.GetRawText(), options);
+                            return createdPet ?? throw new Exception("Не удалось десериализовать созданного питомца");
+                        }
+                    }
+                }
+
+                throw new Exception("Неизвестный формат ответа от сервера");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка создания питомца: {ex.Message}");
+            }
+        }
     }
 }
