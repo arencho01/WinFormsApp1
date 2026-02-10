@@ -118,7 +118,24 @@ namespace WinFormsApp1
 
         private void EditBtn_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Edit");
+            if (PetsDataGridView.SelectedRows.Count > 0 &&
+                PetsDataGridView.SelectedRows[0].DataBoundItem is Pet selectedPet &&
+                ClientComboBox.SelectedItem is Client selectedClient &&
+                _apiService != null)
+            {
+                // Создаем форму редактирования с передачей питомца
+                var editForm = new PetEditForm(_apiService, selectedClient.Id, selectedPet);
+
+                // Показываем форму как диалоговое окно и проверяем результат
+                var result = editForm.ShowDialog();
+
+                // Если пользователь нажал "Сохранить" (DialogResult.OK)
+                if (result == DialogResult.OK)
+                {
+                    // Обновляем список питомцев для выбранного клиента
+                    RefreshPetsForSelectedClient();
+                }
+            }
         }
 
         private void AddBtn_Click(object? sender, EventArgs e)

@@ -17,6 +17,8 @@ namespace WinFormsApp1
         private readonly VetmanagerApiService _apiService;
         private readonly int _ownerId;
         private bool _isEditMode = false;
+        private int? _selectedTypeId;
+        private int? _selectedBreedId;
 
         public PetEditForm(VetmanagerApiService apiService, int ownerId, Pet? petToEdit = null)
         {
@@ -52,6 +54,44 @@ namespace WinFormsApp1
         private async void PetEditForm_Load(object? sender, EventArgs e)
         {
             await LoadPetTypesAsync();
+
+            // Если это режим редактирования, устанавливаем сохраненные вид и породу
+            if (_isEditMode && _selectedTypeId.HasValue)
+            {
+                await SetSelectedPetTypeAndBreedAsync();
+            }
+        }
+
+        private async Task SetSelectedPetTypeAndBreedAsync()
+        {
+            // Устанавливаем выбранный вид
+            if (_selectedTypeId.HasValue)
+            {
+                for (int i = 0; i < petTypeComboBox.Items.Count; i++)
+                {
+                    if (petTypeComboBox.Items[i] is PetType petType && petType.Id == _selectedTypeId.Value)
+                    {
+                        petTypeComboBox.SelectedIndex = i;
+
+                        // Ждем загрузки пород для этого вида
+                        await LoadBreedsForSelectedTypeAsync();
+
+                        // Устанавливаем выбранную породу
+                        if (_selectedBreedId.HasValue && petBreedComboBox.Items.Count > 0)
+                        {
+                            for (int j = 0; j < petBreedComboBox.Items.Count; j++)
+                            {
+                                if (petBreedComboBox.Items[j] is PetBreed breed && breed.Id == _selectedBreedId.Value)
+                                {
+                                    petBreedComboBox.SelectedIndex = j;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
         }
 
         private async Task LoadPetTypesAsync()
@@ -132,7 +172,6 @@ namespace WinFormsApp1
             // Устанавливаем пол
             if (!string.IsNullOrEmpty(pet.Sex))
             {
-                // Находим соответствующий элемент в ComboBox
                 for (int i = 0; i < petSexComboBox.Items.Count; i++)
                 {
                     if (petSexComboBox.Items[i].ToString() == pet.Sex)
@@ -143,15 +182,20 @@ namespace WinFormsApp1
                 }
             }
 
-            // TODO: Установить выбранные вид и породу (после загрузки данных)
-            // Нужно дождаться загрузки видов и пород, затем установить выбранные
-
             // Устанавливаем дату рождения
             if (!string.IsNullOrEmpty(pet.Birthday) &&
                 DateTime.TryParse(pet.Birthday, out DateTime birthday))
             {
                 petDayOfBirthPicker.Value = birthday;
             }
+            else
+            {
+                petDayOfBirthPicker.Value = DateTime.Today;
+            }
+
+            // Запомним ID вида и породы для установки после загрузки данных
+            _selectedTypeId = pet.TypeId;
+            _selectedBreedId = pet.BreedId;
         }
 
         private async void SaveBtn_Click(object? sender, EventArgs e)
@@ -236,8 +280,39 @@ namespace WinFormsApp1
 
         private async Task EditPetAsync()
         {
-            // TODO: Реализовать вызов API для обновления питомца
-            throw new NotImplementedException("Метод редактирования питомца еще не реализован");
+            if (EditedPet == null) return;
+
+            // Обновляем данные питомца из формы
+            EditedPet.Alias = petAliasTextBox.Text.Trim();
+            EditedPet.Sex = petSexComboBox.SelectedItem?.ToString();
+
+            // Обновляем выбранный вид, если есть
+            if (petTypeComboBox.SelectedItem is PetType selectedType)
+            {
+                EditedPet.TypeId = selectedType.Id;
+            }
+
+            // Обновляем выбранную породу, если есть
+            if (petBreedComboBox.SelectedItem is PetBreed selectedBreed)
+            {
+                EditedPet.BreedId = selectedBreed.Id;
+            }
+
+            // Обновляем дату рождения
+            EditedPet.Birthday = petDayOfBirthPicker.Value.ToString("yyyy-MM-dd");
+
+            try
+            {
+                // Вызываем API для обновления питомца
+                var updatedPet = await _apiService.UpdatePetAsync(EditedPet);
+
+                // Можно вывести информацию об обновленном питомце
+                Debug.WriteLine($"Питомец обновлен с ID: {updatedPet.Id}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Не удалось обновить питомца: {ex.Message}");
+            }
         }
 
         private void CancelBtn_Click(object? sender, EventArgs e)
