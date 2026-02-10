@@ -156,9 +156,69 @@ namespace WinFormsApp1
             }
         }
 
-        private void DeleteBtn_Click(object? sender, EventArgs e)
+        private async void DeleteBtn_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Delete");
+            if (PetsDataGridView.SelectedRows.Count > 0 &&
+                PetsDataGridView.SelectedRows[0].DataBoundItem is Pet selectedPet &&
+                ClientComboBox.SelectedItem is Client selectedClient &&
+                _apiService != null)
+            {
+                // Подтверждение удаления с большей информацией
+                var message = $"Вы действительно хотите удалить питомца?\n\n" +
+                             $"ID: {selectedPet.Id}\n" +
+                             $"Кличка: {selectedPet.Alias}\n" +
+                             $"Владелец: {selectedClient.LastName} {selectedClient.FirstName}";
+
+                var result = MessageBox.Show(
+                    message,
+                    "Подтверждение удаления",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning, // Используем Warning вместо Question для удаления
+                    MessageBoxDefaultButton.Button2);
+
+                if (result == DialogResult.Yes)
+                {
+                    try
+                    {
+                        Cursor = Cursors.WaitCursor;
+                        DeleteBtn.Enabled = false;
+
+                        var success = await _apiService.DeletePetAsync(selectedPet.Id);
+
+                        if (success)
+                        {
+                            MessageBox.Show(
+                                $"Питомец \"{selectedPet.Alias}\" успешно удален",
+                                "Успех",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+
+                            RefreshPetsForSelectedClient();
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                "Не удалось удалить питомца",
+                                "Ошибка",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(
+                            $"Ошибка удаления питомца: {ex.Message}",
+                            "Ошибка",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        Cursor = Cursors.Default;
+                        DeleteBtn.Enabled = true;
+                    }
+                }
+            }
         }
 
         private async void ClientСomboBox_SelectedIndexChanged(object? sender, EventArgs e)

@@ -478,5 +478,54 @@ namespace WinFormsApp1
                 throw new Exception($"Ошибка обновления питомца: {ex.Message}");
             }
         }
+
+        public async Task<bool> DeletePetAsync(int petId)
+        {
+            try
+            {
+                if (petId <= 0)
+                {
+                    throw new Exception("ID питомца не указан");
+                }
+
+                using var client = CreateHttpClient();
+
+                var url = $"https://{_domain}.vetmanager2.ru/rest/api/pet/{petId}";
+
+                Debug.WriteLine($"Отправляем запрос удаления питомца: {url}");
+
+                // Используем DELETE-запрос
+                var response = await client.DeleteAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine($"Ошибка удаления: {response.StatusCode}\n{errorContent}");
+
+                    // Проверяем, может быть питомец уже удален или нет прав
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        throw new Exception("Питомец не найден или уже удален");
+                    }
+                    throw new Exception($"Ошибка удаления питомца: {response.StatusCode}");
+                }
+
+                var responseJson = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"Ответ удаления питомца: {responseJson}");
+
+                using JsonDocument document = JsonDocument.Parse(responseJson);
+
+                if (document.RootElement.TryGetProperty("success", out var successElement))
+                {
+                    return successElement.GetBoolean();
+                }
+
+                throw new Exception("Неизвестный формат ответа от сервера");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка удаления питомца: {ex.Message}");
+            }
+        }
     }
 }
