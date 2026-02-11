@@ -30,14 +30,17 @@ namespace WinFormsApp1
 
             // Настраиваем SexComboBox
             petSexComboBox.Items.AddRange(new object[] { "male", "female", "castrated", "sterilized", "unknown" });
-            petSexComboBox.SelectedIndex = 0; // Устанавливаем значение по умолчанию
+            petSexComboBox.SelectedIndex = 0;
 
             if (petToEdit != null)
             {
                 _isEditMode = true;
                 EditedPet = petToEdit;
                 this.Text = "Редактирование питомца";
-                LoadPetData(petToEdit);
+
+                // Просто сохраняем данные, НЕ загружаем в форму сразу
+                _selectedTypeId = petToEdit.TypeId;
+                _selectedBreedId = petToEdit.BreedId;
             }
             else
             {
@@ -48,47 +51,163 @@ namespace WinFormsApp1
             cancelBtn.Click += CancelBtn_Click;
             petTypeComboBox.SelectedIndexChanged += PetTypeComboBox_SelectedIndexChanged;
 
+            // Подписываемся на событие Load
             this.Load += PetEditForm_Load;
         }
 
         private async void PetEditForm_Load(object? sender, EventArgs e)
         {
-            await LoadPetTypesAsync();
-
-            // Если это режим редактирования, устанавливаем сохраненные вид и породу
-            if (_isEditMode && _selectedTypeId.HasValue)
+            try
             {
-                await SetSelectedPetTypeAndBreedAsync();
+                // Показываем индикатор загрузки
+                SetLoadingState(true);
+
+                // Загружаем основные данные питомца (кличка, пол, дата)
+                if (EditedPet != null)
+                {
+                    petAliasTextBox.Text = EditedPet.Alias;
+
+                    // Устанавливаем пол
+                    if (!string.IsNullOrEmpty(EditedPet.Sex))
+                    {
+                        for (int i = 0; i < petSexComboBox.Items.Count; i++)
+                        {
+                            if (petSexComboBox.Items[i].ToString() == EditedPet.Sex)
+                            {
+                                petSexComboBox.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Устанавливаем дату рождения
+                    if (!string.IsNullOrEmpty(EditedPet.Birthday) &&
+                        DateTime.TryParse(EditedPet.Birthday, out DateTime birthday))
+                    {
+                        petDayOfBirthPicker.Value = birthday;
+                    }
+                }
+
+                // Загружаем виды питомцев
+                await LoadPetTypesAsync();
+
+                // Если это режим редактирования, устанавливаем правильный вид и породу
+                if (_isEditMode)
+                {
+                    await SetSelectedPetTypeAndBreedAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка");
+            }
+            finally
+            {
+                SetLoadingState(false);
+            }
+        }
+
+        private void SetLoadingState(bool isLoading)
+        {
+            if (isLoading)
+            {
+                Cursor = Cursors.WaitCursor;
+                petTypeComboBox.Enabled = false;
+                petBreedComboBox.Enabled = false;
+
+                // Сохраняем текущие элементы, если они есть
+                if (petTypeComboBox.Items.Count == 0 || petTypeComboBox.Items[0].ToString() != "Загрузка...")
+                {
+                    petTypeComboBox.Items.Clear();
+                    petTypeComboBox.Items.Add("Загрузка...");
+                    petTypeComboBox.SelectedIndex = 0;
+                }
+
+                if (petBreedComboBox.Items.Count == 0 || petBreedComboBox.Items[0].ToString() != "Загрузка...")
+                {
+                    petBreedComboBox.Items.Clear();
+                    petBreedComboBox.Items.Add("Загрузка...");
+                    petBreedComboBox.SelectedIndex = 0;
+                }
+            }
+            else
+            {
+                Cursor = Cursors.Default;
+                petTypeComboBox.Enabled = true;
+                petBreedComboBox.Enabled = true;
+
+                // НЕ очищаем комбобоксы здесь!
+                // Они должны уже содержать реальные данные из LoadPetTypesAsync
             }
         }
 
         private async Task SetSelectedPetTypeAndBreedAsync()
         {
+            // Убеждаемся, что виды загружены
+            if (petTypeComboBox.Items.Count == 0 ||
+                (petTypeComboBox.Items.Count == 1 && petTypeComboBox.Items[0].ToString() == "Загрузка..."))
+            {
+                // Ждем загрузки видов
+                await Task.Delay(100);
+            }
+
             // Устанавливаем выбранный вид
             if (_selectedTypeId.HasValue)
             {
+                bool typeFound = false;
+
                 for (int i = 0; i < petTypeComboBox.Items.Count; i++)
                 {
                     if (petTypeComboBox.Items[i] is PetType petType && petType.Id == _selectedTypeId.Value)
                     {
                         petTypeComboBox.SelectedIndex = i;
+                        typeFound = true;
+                        break;
+                    }
+                }
 
-                        // Ждем загрузки пород для этого вида
-                        await LoadBreedsForSelectedTypeAsync();
-
-                        // Устанавливаем выбранную породу
-                        if (_selectedBreedId.HasValue && petBreedComboBox.Items.Count > 0)
+                if (!typeFound && petTypeComboBox.Items.Count > 0)
+                {
+                    // Если вид не найден, выбираем первый настоящий элемент (не "Загрузка...")
+                    for (int i = 0; i < petTypeComboBox.Items.Count; i++)
+                    {
+                        if (petTypeComboBox.Items[i] is PetType)
                         {
-                            for (int j = 0; j < petBreedComboBox.Items.Count; j++)
+                            petTypeComboBox.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+
+                // Ждем загрузки пород для выбранного вида
+                await LoadBreedsForSelectedTypeAsync();
+
+                // Устанавливаем выбранную породу
+                if (_selectedBreedId.HasValue && petBreedComboBox.Items.Count > 0)
+                {
+                    bool breedFound = false;
+
+                    for (int j = 0; j < petBreedComboBox.Items.Count; j++)
+                    {
+                        if (petBreedComboBox.Items[j] is PetBreed breed && breed.Id == _selectedBreedId.Value)
+                        {
+                            petBreedComboBox.SelectedIndex = j;
+                            breedFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!breedFound && petBreedComboBox.Items.Count > 0)
+                    {
+                        // Если порода не найдена, выбираем первый настоящий элемент
+                        for (int j = 0; j < petBreedComboBox.Items.Count; j++)
+                        {
+                            if (petBreedComboBox.Items[j] is PetBreed)
                             {
-                                if (petBreedComboBox.Items[j] is PetBreed breed && breed.Id == _selectedBreedId.Value)
-                                {
-                                    petBreedComboBox.SelectedIndex = j;
-                                    break;
-                                }
+                                petBreedComboBox.SelectedIndex = j;
+                                break;
                             }
                         }
-                        break;
                     }
                 }
             }
@@ -100,9 +219,6 @@ namespace WinFormsApp1
             {
                 var petTypes = await _apiService.GetPetTypesAsync();
 
-                // Для отладки
-                MessageBox.Show($"Загружено видов: {petTypes.Length}", "Отладка");
-
                 petTypeComboBox.BeginUpdate();
                 petTypeComboBox.Items.Clear();
 
@@ -113,7 +229,9 @@ namespace WinFormsApp1
 
                 petTypeComboBox.EndUpdate();
 
-                if (petTypeComboBox.Items.Count > 0)
+                // Если это режим редактирования, НЕ выбираем первый элемент автоматически
+                // Мы выберем правильный вид позже в SetSelectedPetTypeAndBreedAsync
+                if (!_isEditMode && petTypeComboBox.Items.Count > 0)
                 {
                     petTypeComboBox.SelectedIndex = 0;
                     await LoadBreedsForSelectedTypeAsync();
@@ -137,6 +255,13 @@ namespace WinFormsApp1
                 try
                 {
                     Debug.WriteLine($"Выбран вид: {selectedType.Title}, ID: {selectedType.Id}");
+
+                    // Очищаем комбобокс и показываем "Загрузка..."
+                    petBreedComboBox.BeginUpdate();
+                    petBreedComboBox.Items.Clear();
+                    petBreedComboBox.Items.Add("Загрузка...");
+                    petBreedComboBox.SelectedIndex = 0;
+                    petBreedComboBox.EndUpdate();
 
                     var breeds = await _apiService.GetBreedsByTypeIdAsync(selectedType.Id);
 

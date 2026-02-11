@@ -21,8 +21,6 @@ namespace WinFormsApp1
             PetsDataGridView.SelectionChanged += PetsDataGridView_SelectionChanged;
 
             InitializePetsDataGridView();
-
-
             UpdateButtonsState();
             LoadSettings();
         }
