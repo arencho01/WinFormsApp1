@@ -329,8 +329,6 @@ namespace WinFormsApp1
                 ClientComboBox.EndUpdate();
                 ClientComboBox.Enabled = true;
                 ClientComboBox.Text = "";
-
-                MessageBox.Show($"Загружено клиентов: {clients.Length}", "Успешно");
             }
             catch (Exception ex)
             {
