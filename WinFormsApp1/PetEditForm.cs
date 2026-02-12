@@ -290,39 +290,6 @@ namespace WinFormsApp1
             }
         }
 
-        private void LoadPetData(Pet pet)
-        {
-            petAliasTextBox.Text = pet.Alias;
-
-            // Устанавливаем пол
-            if (!string.IsNullOrEmpty(pet.Sex))
-            {
-                for (int i = 0; i < petSexComboBox.Items.Count; i++)
-                {
-                    if (petSexComboBox.Items[i].ToString() == pet.Sex)
-                    {
-                        petSexComboBox.SelectedIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            // Устанавливаем дату рождения
-            if (!string.IsNullOrEmpty(pet.Birthday) &&
-                DateTime.TryParse(pet.Birthday, out DateTime birthday))
-            {
-                petDayOfBirthPicker.Value = birthday;
-            }
-            else
-            {
-                petDayOfBirthPicker.Value = DateTime.Today;
-            }
-
-            // Запомним ID вида и породы для установки после загрузки данных
-            _selectedTypeId = pet.TypeId;
-            _selectedBreedId = pet.BreedId;
-        }
-
         private async void SaveBtn_Click(object? sender, EventArgs e)
         {
             // Валидация
