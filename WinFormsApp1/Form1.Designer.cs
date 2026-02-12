@@ -133,7 +133,6 @@
             Controls.Add(APISettingsBtn);
             Font = new Font("Segoe UI", 10F);
             Name = "Form1";
-            Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)PetsDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();

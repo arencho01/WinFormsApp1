@@ -100,11 +100,6 @@ namespace WinFormsApp1
             UpdateButtonsState();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void APISettingsBtn_Click(Object? sender, EventArgs e)
         {
             APISettingsForm APISettingsForm = new APISettingsForm();
