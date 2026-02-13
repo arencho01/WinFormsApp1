@@ -95,6 +95,62 @@ namespace WinFormsApp1
             PetsDataGridView.GridColor = SystemColors.ControlDark; // Цвет линий сетки
         }
 
+        private void UpdateButtonsState()
+        {
+            // Кнопка Добавить активна, когда выбран клиент
+            AddBtn.Enabled = ClientComboBox.SelectedItem != null;
+
+            // Кнопки Редактировать и Удалить активны, когда выбран питомец
+            bool hasSelectedPet = PetsDataGridView.SelectedRows.Count > 0;
+            EditBtn.Enabled = hasSelectedPet;
+            DeleteBtn.Enabled = hasSelectedPet;
+        }
+
+        private void LoadSettings()
+        {
+            try
+            {
+                if (File.Exists("settings.xml"))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(ApiSettings));
+
+                    using var reader = new StreamReader("settings.xml");
+
+                    var result = serializer.Deserialize(reader);
+
+                    if (result is ApiSettings loadedSettings)
+                    {
+                        _settings = loadedSettings;
+
+                        _apiService = new VetmanagerApiService(_settings.Domain, _settings.Token);
+
+                        ClientComboBox.Enabled = true;
+
+                        LoadClientsAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Файл настроек поврежден", "Ошибка", MessageBoxButtons.OK);
+                        _settings = new ApiSettings();
+                        ClientComboBox.Enabled = false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Файл настроек не найден.\nНажмите 'Настройки API' для подключения", "Ошибка", MessageBoxButtons.OK);
+
+                    ClientComboBox.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show($"Ошибка при загрузке настроек:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK);
+
+                ClientComboBox.Enabled = false;
+            }
+        }
+
         private void PetsDataGridView_SelectionChanged(object? sender, EventArgs e)
         {
             UpdateButtonsState();
@@ -107,6 +163,24 @@ namespace WinFormsApp1
             APISettingsForm.ShowDialog();
 
             LoadSettings();
+        }
+
+        private void AddBtn_Click(object? sender, EventArgs e)
+        {
+            if (ClientComboBox.SelectedItem is Client selectedClient && _apiService != null)
+            {
+                var editForm = new PetEditForm(_apiService, selectedClient.Id);
+
+                // Показываем форму как диалоговое окно и проверяем результат
+                var result = editForm.ShowDialog();
+
+                // Если пользователь нажал "Сохранить" (DialogResult.OK)
+                if (result == DialogResult.OK)
+                {
+                    // Обновляем список питомцев для выбранного клиента
+                    RefreshPetsForSelectedClient();
+                }
+            }
         }
 
         private void EditBtn_Click(object? sender, EventArgs e)
@@ -131,24 +205,6 @@ namespace WinFormsApp1
             }
         }
 
-        private void AddBtn_Click(object? sender, EventArgs e)
-        {
-            if (ClientComboBox.SelectedItem is Client selectedClient && _apiService != null)
-            {
-                var editForm = new PetEditForm(_apiService, selectedClient.Id);
-
-                // Показываем форму как диалоговое окно и проверяем результат
-                var result = editForm.ShowDialog();
-
-                // Если пользователь нажал "Сохранить" (DialogResult.OK)
-                if (result == DialogResult.OK)
-                {
-                    // Обновляем список питомцев для выбранного клиента
-                    RefreshPetsForSelectedClient();
-                }
-            }
-        }
-
         private async void DeleteBtn_Click(object? sender, EventArgs e)
         {
             if (PetsDataGridView.SelectedRows.Count > 0 &&
@@ -156,7 +212,7 @@ namespace WinFormsApp1
                 ClientComboBox.SelectedItem is Client selectedClient &&
                 _apiService != null)
             {
-                // Подтверждение удаления с большей информацией
+                // Подтверждение удаления
                 var message = $"Вы действительно хотите удалить питомца?\n\n" +
                              $"ID: {selectedPet.Id}\n" +
                              $"Кличка: {selectedPet.Alias}\n" +
@@ -242,61 +298,7 @@ namespace WinFormsApp1
             UpdateButtonsState();
         }
 
-        private void LoadSettings()
-        {
-            try
-            {
-                if (File.Exists("settings.xml"))
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(ApiSettings));
 
-                    using var reader = new StreamReader("settings.xml");
-
-                    var result = serializer.Deserialize(reader);
-
-                    if (result is ApiSettings loadedSettings)
-                    {
-                        _settings = loadedSettings;
-
-                        _apiService = new VetmanagerApiService(_settings.Domain, _settings.Token);
-
-                        ClientComboBox.Enabled = true;
-
-                        LoadClientsAsync();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Файл настроек поврежден", "Ошибка", MessageBoxButtons.OK);
-                        _settings = new ApiSettings();
-                        ClientComboBox.Enabled = false;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Файл настроек не найден.\nНажмите 'Настройки API' для подключения", "Ошибка", MessageBoxButtons.OK);
-
-                    ClientComboBox.Enabled = false;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show($"Ошибка при загрузке настроек:\n{ex.Message}", "Ошибка", MessageBoxButtons.OK);
-
-                ClientComboBox.Enabled = false;
-            }
-        }
-
-        private void UpdateButtonsState()
-        {
-            // Кнопка Добавить активна, когда выбран клиент
-            AddBtn.Enabled = ClientComboBox.SelectedItem != null;
-
-            // Кнопки Редактировать и Удалить активны, когда выбран питомец
-            bool hasSelectedPet = PetsDataGridView.SelectedRows.Count > 0;
-            EditBtn.Enabled = hasSelectedPet;
-            DeleteBtn.Enabled = hasSelectedPet;
-        }
 
         private async void LoadClientsAsync()
         {
