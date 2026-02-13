@@ -17,8 +17,8 @@ namespace WinFormsApp1
             EditBtn.Click += EditBtn_Click;
             AddBtn.Click += AddBtn_Click;
             DeleteBtn.Click += DeleteBtn_Click;
-            ClientComboBox.SelectedIndexChanged += ClientСomboBox_SelectedIndexChanged;
-            PetsDataGridView.SelectionChanged += PetsDataGridView_SelectionChanged;
+            ClientComboBox.SelectedIndexChanged += ClientСomboBox_SelectedIndexChanged; // при выборе другого клиента вызываем обработчик
+            PetsDataGridView.SelectionChanged += PetsDataGridView_SelectionChanged; // при выделении (или снятии выделения) вызываем обработчик
 
             InitializePetsDataGridView();
             UpdateButtonsState();
