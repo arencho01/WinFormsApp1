@@ -353,9 +353,6 @@ namespace WinFormsApp1
                     PetsDataGridView.DataSource = pets;
                     PetsDataGridView.Enabled = true;
 
-                    // Необязательно: покажем количество питомцев в статусной строке
-                    Debug.WriteLine($"Загружено питомцев: {pets.Length}");
-
                     UpdateButtonsState();
                 }
                 catch (Exception ex)
